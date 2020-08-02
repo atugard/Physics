@@ -1,6 +1,8 @@
 #lang racket
 
-(provide type-list? contains-type? tag-list get-tag tagged-list?)
+(provide symbol-append type-list? contains-type? tag-list get-tag tagged-list? not-number?)
+(define (symbol-append sym1 sym2)
+  (string->symbol (string-append (symbol->string sym1) (symbol->string sym2))))
 
 
 (define (type-list? x type?)
@@ -22,3 +24,5 @@
   (if (pair? l)
       (symbol? (car l))
       false))
+(define (not-number? n)
+  (not (number? n)))
