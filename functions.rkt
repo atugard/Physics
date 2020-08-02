@@ -1,11 +1,17 @@
 #lang racket
-
-(provide old+ old- old* func+ func- func* compose)
+(require "math.rkt")
+(provide old+ old- old* oldexpt oldexp oldsin oldcos oldtan oldsquare oldsqrt func+ func- func* compose)
 
 (define old+ +)
 (define old- -)
 (define old* *)
-
+(define oldexpt expt)
+(define oldexp exp)
+(define oldsin sin)
+(define oldcos cos)
+(define oldtan tan)
+(define oldsquare square)
+(define oldsqrt sqrt)
 
 (define (generate-arithmetic-functions op)
   (lambda fns
