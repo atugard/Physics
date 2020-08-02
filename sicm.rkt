@@ -1,7 +1,4 @@
-
-;;1.4 Computing actions
-;;For a system of one free particle we have the Lagrangian of L(t,x,v) = \frac{1}{2} mv \dot v
-
+;;Implementations of data structure needed for the book.
 (define (install-math-package m)
   (define (-- n)
     (- n 1))
@@ -146,6 +143,8 @@
 (define w
   (up 'w^1 'w^2 'w^3))
 
+;;1.4 Computing actions
+;;For a system of one free particle we have the Lagrangian of L(t,x,v) = \frac{1}{2} mv \dot v
 
 ;;(define ((L-free-particle1 mass) local)
 ;;  (let ((v (velocity local)))
