@@ -1,18 +1,93 @@
+(define old+ +)
+(define old- -)
+(define old* *)
+
 ;;Implementations of data structure needed for the book.
+
+(define (type-list? x type?)
+  (cond [(null? x) true]
+        [(not (pair? x)) false]
+        [else (and (type? (car x)) (type-list? (cdr x) type?))]))
+
+(define (contains-type? x type?)
+  (cond [(not (pair? x)) false] 
+        [(type? (car x)) true]
+        [else (contains-type? (cdr x) type?)]))
+
 (define (install-math-package m)
   (define (-- n)
     (- n 1))
   (define (++ n)
     (+ n 1))
+  (define (square n)
+    (* n n))
   (define (dispatch m)
     (cond [(eq? m '--) --]
           [(eq? m '++) ++]
+          [(eq? m 'square) square]
           [else
            (error "Unrecognized operation: " m)]))
   (dispatch m))
 
+(define (install-function-package m)
+  (define (generate-arithmetic-functions op)
+    (lambda fns
+      (lambda x
+        (apply op (map (lambda (fn) (apply fn x)) fns)))))
+  (define +
+    (generate-arithmetic-functions old+))
+  (define -
+    (generate-arithmetic-functions old-))
+  (define *
+    (generate-arithmetic-functions old*))
+  (define (compose f g)
+    (display 'f))
+   ;; (if (and (procedure? f) (procedure? g))
+   ;;     (lambda x
+   ;;       (cond [(number-list? x)
+   ;;              (apply f (apply g x))]
+   ;;             [else
+   ;;              (define (it l result)
+   ;;                (list f (list g
+   ;;             
+   ;;     (error "Can only compose two procedures. You gave: " f g)))
+  (define (dispatch m)
+    (cond [(eq? m '+) +]
+          [(eq? m '-) -]
+          [(eq? m '*) *]
+          [(eq? m 'compose) compose]))
+  (dispatch m))
+
+(define +func
+  (install-function-package '+))
+(define -func
+  (install-function-package '-))
+(define *func
+  (install-function-package '*))
+(define compose
+  (install-function-package 'compose))
+
+(define (+ . args)
+  (cond [(type-list? args procedure?)
+         (apply +func args)]
+        [(contains-type? args symbol?)
+         (tag-list args '+)]
+        [else (apply old+ args)]))
+(define (- . args)
+  (cond [(type-list? args procedure?)
+         (apply -func args)]
+        [(contains-type? args symbol?)
+         (tag-list args '-)]
+        [else (apply old+ args)]))
+(define (* . args)
+  (cond [(type-list? args procedure?)
+         (apply *func args)]
+        [(contains-type? args symbol?)
+         (tag-list args '*)]
+        [else (apply old+ args)]))
+
 (define (install-tuples-package m)
-  (define (tag l t)
+  (define (tag-list l t)
     (when (symbol? t)
       (cons t l)))
   (define (get-tag l)
@@ -24,9 +99,9 @@
         (symbol? (car l))
         false))
   (define (up . args)
-  (tag args 'up))
+  (tag-list args 'up))
   (define (down . args)
-    (tag args 'down))
+    (tag-list args 'down))
   (define (ref tup i)
     (let ((tup (cdr tup)))
       (define (traverse tup i)
@@ -35,7 +110,7 @@
               [(eq? i 0)
                (car tup)]
               [else
-               (traverse (cdr tup) (-- i))]))
+               (traverse (cdr tup) (- i 1))]))
       (traverse tup i)))
   (define ((component . args) tup)
     (if (null? args)
@@ -117,8 +192,15 @@
           [(eq? m '*tup) *tup]
           [(eq? m 'a*tup) a*tup]
           [else
-           (error "Operation not recognized!" op)]))
+           (error "Operation not recognized!" m)]))
   (dispatch m))
+
+
+;;(define (contractive tup1 tup2)
+;;  (cond [(not (and (tagged-list? tup1) (tagged-list? tup2))) false]
+;;        [(and (eq? (get-tag tup1) 'up) (eq? (get-tag tup1) 'down)
+;;              (eq? (length tup1) (length tup2))
+;;              (or (car tup1)
 
 (define up
   (install-tuples-package 'up))
