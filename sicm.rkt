@@ -14,6 +14,20 @@
         [(type? (car x)) true]
         [else (contains-type? (cdr x) type?)]))
 
+
+(define (tag-list l t)
+    (when (symbol? t)
+      (cons t l)))
+  (define (get-tag l)
+    (if (symbol? (car l))
+        (car l)
+        null))
+  (define (tagged-list? l)
+    (if (pair? l)
+        (symbol? (car l))
+        false))
+
+
 (define (install-math-package m)
   (define (-- n)
     (- n 1))
@@ -87,19 +101,8 @@
         [else (apply old+ args)]))
 
 (define (install-tuples-package m)
-  (define (tag-list l t)
-    (when (symbol? t)
-      (cons t l)))
-  (define (get-tag l)
-    (if (symbol? (car l))
-        (car l)
-        null))
-  (define (tagged-list? l)
-    (if (pair? l)
-        (symbol? (car l))
-        false))
   (define (up . args)
-  (tag-list args 'up))
+    (tag-list args 'up))
   (define (down . args)
     (tag-list args 'down))
   (define (ref tup i)
@@ -117,22 +120,22 @@
         tup
         ((apply component (cdr args)) (ref tup (car args)))))
   (define (+tup val1 val2)
-        (if (and (tagged-list? val1) (tagged-list? val2)
+    (if (and (tagged-list? val1) (tagged-list? val2)
              (and (eq? (length val1) (length val2))))
-            (let ((tag1 (get-tag val1))
-                  (tag2 (get-tag val2))
-                  (rest1 (cdr val1))
-                  (rest2 (cdr val2)))
-              (define (add l1 l2)
-                (if (null? l1)
-                    null
-                    (cons (list '+ (car l1) (car l2)) (add (cdr l1) (cdr l2)))))
-              (cond [(and (eq? tag1 'up) (eq? tag2 'up))
-                     (apply up (add rest1 rest2))]
-                    [(and (eq? tag1 'down) (eq? tag2 'down))
-                     (apply down (add rest1 rest2))]
-                    [else
-                     (error "This operation requires either up, up or down, down, you gave: " tag1 tag2)]))
+        (let ((tag1 (get-tag val1))
+              (tag2 (get-tag val2))
+              (rest1 (cdr val1))
+              (rest2 (cdr val2)))
+          (define (add l1 l2)
+            (if (null? l1)
+                null
+                (cons (list '+ (car l1) (car l2)) (add (cdr l1) (cdr l2)))))
+          (cond [(and (eq? tag1 'up) (eq? tag2 'up))
+                 (apply up (add rest1 rest2))]
+                [(and (eq? tag1 'down) (eq? tag2 'down))
+                 (apply down (add rest1 rest2))]
+                [else
+                 (error "This operation requires either up, up or down, down, you gave: " tag1 tag2)]))
         (error "This operation requires that both arguments be tagged tuples of the same length.")))
   (define (-tup val1 val2)
     (if (and (tagged-list? val1) (tagged-list? val2)
