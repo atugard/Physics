@@ -8,25 +8,25 @@
   (cond [(null? x) true]
         [(not (pair? x)) false]
         [else (and (type? (car x)) (type-list? (cdr x) type?))]))
-
 (define (contains-type? x type?)
   (cond [(not (pair? x)) false] 
         [(type? (car x)) true]
         [else (contains-type? (cdr x) type?)]))
-
-
 (define (tag-list l t)
-    (when (symbol? t)
-      (cons t l)))
-  (define (get-tag l)
-    (if (symbol? (car l))
-        (car l)
-        null))
-  (define (tagged-list? l)
-    (if (pair? l)
-        (symbol? (car l))
-        false))
-
+  (when (symbol? t)
+    (cons t l)))
+(define (get-tag l)
+  (if (symbol? (car l))
+      (car l)
+      null))
+(define (tagged-list? l)
+  (if (pair? l)
+      (symbol? (car l))
+      false))
+(define (reducer l op)
+  (let  ((numbers (filter number? l))
+         (non-numbers (filter (lambda (x) (not (number? x))) l)))
+    (cons (apply op numbers) non-numbers)))
 
 (define (install-math-package m)
   (define (-- n)
@@ -56,15 +56,15 @@
     (generate-arithmetic-functions old*))
   (define (compose f g)
     (display 'f))
-   ;; (if (and (procedure? f) (procedure? g))
-   ;;     (lambda x
-   ;;       (cond [(number-list? x)
-   ;;              (apply f (apply g x))]
-   ;;             [else
-   ;;              (define (it l result)
-   ;;                (list f (list g
-   ;;             
-   ;;     (error "Can only compose two procedures. You gave: " f g)))
+  ;; (if (and (procedure? f) (procedure? g))
+  ;;     (lambda x
+  ;;       (cond [(number-list? x)
+  ;;              (apply f (apply g x))]
+  ;;             [else
+  ;;              (define (it l result)
+  ;;                (list f (list g
+  ;;             
+  ;;     (error "Can only compose two procedures. You gave: " f g)))
   (define (dispatch m)
     (cond [(eq? m '+) +]
           [(eq? m '-) -]
@@ -81,23 +81,24 @@
 (define compose
   (install-function-package 'compose))
 
+
 (define (+ . args)
   (cond [(type-list? args procedure?)
          (apply +func args)]
         [(contains-type? args symbol?)
-         (tag-list args '+)]
+         (tag-list (reducer args +) '+)]
         [else (apply old+ args)]))
 (define (- . args)
   (cond [(type-list? args procedure?)
          (apply -func args)]
         [(contains-type? args symbol?)
-         (tag-list args '-)]
+         (tag-list (reducer args -) '-)]
         [else (apply old+ args)]))
 (define (* . args)
   (cond [(type-list? args procedure?)
          (apply *func args)]
         [(contains-type? args symbol?)
-         (tag-list args '*)]
+         (tag-list (reducer args *) '*)]
         [else (apply old+ args)]))
 
 (define (install-tuples-package m)
