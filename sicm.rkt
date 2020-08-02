@@ -1,11 +1,18 @@
 
 ;;1.4 Computing actions
 ;;For a system of one free particle we have the Lagrangian of L(t,x,v) = \frac{1}{2} mv \dot v
-(define (-- n)
-  (- n 1))
-(define (++ n)
-  (+ n 1))
 
+(define (install-math-package m)
+  (define (-- n)
+    (- n 1))
+  (define (++ n)
+    (+ n 1))
+  (define (dispatch m)
+    (cond [(eq? m '--) --]
+          [(eq? m '++) ++]
+          [else
+           (error "Unrecognized operation: " m)]))
+  (dispatch m))
 
 (define (install-tuples-package m)
   (define (tag l t)
