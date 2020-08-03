@@ -6,6 +6,12 @@
 
 (provide + - * compose expt exp sin cos tan square sqrt)
 
+(define identities
+  (list
+   (cons '(+ (square cos) (square sin)) 1)
+   (cons '(+ (square sin) (square cos)) 1)))
+
+
 (define (reducer l op)
   (let  ((numbers (filter number? l))
          (non-numbers (filter (lambda (x) (not-number? x)) l)))
@@ -13,7 +19,7 @@
         l
         (cons (apply op numbers) non-numbers))))
 
-
+;;check if x is a number list. If so, proceed as currently defined. Otherwise, make a list. That list can then be checked for identities. 
 (define (generate-arithmetic-functions op)
   (lambda fns
     (lambda x
@@ -73,11 +79,10 @@
   (if (not (number? a))
       (list 'tan a)
       (oldtan a)))
-(define (square a)
-  (if (not (number? a))
-      (list 'square a)
-      (oldsquare a)))
 (define (sqrt a)
   (if (not (number? a))
       (list 'sqrt a)
       (oldsqrt a)))
+(define (square a)
+  (* a a))
+
