@@ -11,12 +11,9 @@
    (cons '(+ (square sin) (square cos)) 1)))
 
 
-(define (reducer l op)
-  (let  ((numbers (filter number? l))
-         (non-numbers (filter (lambda (x) (not-number? x)) l)))
-    (if (null? numbers)
-        l
-        (cons (apply op numbers) non-numbers))))
+(define (simplifier l)
+  ;;nyi
+  )
 
 ;; we have a_1 + a_2 + ... + a_n = a_1 + (a_2 + ... + a_n), so we use recursion to define addition.
 (define (+ . args)
@@ -62,8 +59,8 @@
                   (lambda x
                     (let ((b (apply a1 x)))
                           (if (number? b)
-                              (old+ a1 b)
-                              (tag-list (list a1 b) '+))))]
+                              (old+ a2 b)
+                              (tag-list (list a2 b) '+))))]
                  [(and (procedure? a1) (tuple? a2)) ;;defined if dim(Im(a1)) = length(a2)
                   ;;nyi
                   ]
@@ -100,7 +97,9 @@
                           (list '- b))))]
                  [(tuple? a)
                   ;;nyi
-                  ]))]
+                  ]
+                 [(and (tagged-list? a) (or (eq? (get-tag a) '+) (eq? (get-tag a) '*)))
+                  (list '- a)]))]
         [else
          (define (rec l)
            (if (null? l)
@@ -189,7 +188,6 @@
         [else
          (* (car args) (apply * (cdr args)))]))
 
-
                   
 ;;(define (compose f g)
 ;;  ;;nyi
@@ -221,4 +219,5 @@
       (oldsqrt a)))
 (define (square a)
   (* a a))
+
 
