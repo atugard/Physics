@@ -1,10 +1,10 @@
 #lang racket 
 
-(provide -- ++ square)
+(provide dec inc square)
 
-(define (-- n)
+(define (dec n)
   (- n 1))
-(define (++ n)
+(define (inc n)
   (+ n 1))
 (define (square n)
   (* n n))

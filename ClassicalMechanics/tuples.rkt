@@ -2,12 +2,23 @@
 
 (require "types.rkt")
 
-(provide up down ref component +tup -tup *tup a*tup)
+(provide up down up? down? tuple? ref component +tup -tup *tup a*tup)
 
 (define (up . args)
   (tag-list args 'up))
 (define (down . args)
   (tag-list args 'down))
+(define (up? t)
+  (if (tagged-list? t)
+      (eq? (get-tag t) 'up)
+      false))
+(define (down? t)
+  (if (tagged-list? t)
+      (eq? (get-tag t) 'down)
+      false))
+(define (tuple? t)
+  (or (up? t) (down? t)))
+
 (define (ref tup i)
   (let ((tup (cdr tup)))
     (define (traverse tup i)

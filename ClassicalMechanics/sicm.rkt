@@ -1,4 +1,3 @@
-(require "tuples.rkt")
 (require "functions.rkt")
 
 ;;1.4 Computing actions
