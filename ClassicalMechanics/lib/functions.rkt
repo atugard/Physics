@@ -3,16 +3,17 @@
 (require "oldfunctions.rkt")
 (require "types.rkt")
 
-(provide + - * compose expt exp sin cos tan square sqrt)
+(provide + - * compose expt exp sin cos tan square sqrt cube)
 
 (define identities
   (list
    (cons '(+ (square cos) (square sin)) 1)
    (cons '(+ (square sin) (square cos)) 1)))
 
-
+;;an idea for how to deal with this is... to keep track of the argument, and pass it to the identity, and see if its the same, in the case of a non-numeric result?
+;;downside is having to evaluate all identities for each computed function... 
 (define (simplifier l)
-  ;;nyi
+  (display 'notyetimplemented)
   )
 
 ;; we have a_1 + a_2 + ... + a_n = a_1 + (a_2 + ... + a_n), so we use recursion to define addition.
@@ -189,9 +190,10 @@
          (* (car args) (apply * (cdr args)))]))
 
                   
-;;(define (compose f g)
-;;  ;;nyi
-;;  )
+(define (compose f g)
+  (lambda (x)
+    (f (g x))))
+  
 
 (define (expt a b)
   (if (or (not (number? a)) (not (number? b)))
@@ -218,6 +220,8 @@
       (list 'sqrt a)
       (oldsqrt a)))
 (define (square a)
-  (* a a))
+  (* a a)) 
+(define (cube a)
+  (* a a a))
 
 

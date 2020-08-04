@@ -1,0 +1,42 @@
+#lang racket
+
+(require "math.rkt")
+
+(provide mlist list->mlist mlist->list mlength mmap mcadr mcdar mcaar mcaaar mcddr mcaddr mcdddr mcadddr)
+
+(define (mlist . args)
+  (if (null? args)
+      null
+      (mcons (car args) (apply mlist (cdr args)))))
+(define (list->mlist l)
+  (apply mlist l))
+(define (mlist->list ml)
+  (if (null? ml)
+      null
+      (cons (mcar ml) (mlist->list (mcdr ml)))))
+(define (mlength args)
+  (define (iter size result)
+    (if (null? result)
+        size
+        (iter (inc size) (mcdr result))))
+  (iter 0 args))
+(define (mmap procedure ml)
+  (if (null? ml)
+      '()
+      (mcons (procedure (mcar ml)) (mmap procedure (mcdr ml)))))
+(define (mcadr mp)
+  (mcar (mcdr mp)))
+(define (mcdar mp)
+  (mcdr (mcar mp)))
+(define (mcaar mp)
+  (mcar (mcar mp)))
+(define (mcaaar mp)
+  (mcar (mcaar mp)))
+(define (mcddr mp)
+  (mcdr (mcdr mp)))
+(define (mcaddr mp)
+  (mcar (mcddr mp)))
+(define (mcdddr mp)
+  (mcdr (mcddr mp)))
+(define (mcadddr mp)
+  (mcar (mcdddr mp)))

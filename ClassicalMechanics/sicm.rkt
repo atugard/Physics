@@ -1,5 +1,3 @@
-(require "functions.rkt")
-
 ;;1.4 Computing actions
 ;;For a system of one free particle we have the Lagrangian of L(t,x,v) = \frac{1}{2} mv \dot v
 
