@@ -63,25 +63,25 @@
 ;;Exercise 1.4: Lagrangian actions
 ;;Show that the action on a solution path is m/2 (xb-xa)/(tb-ta)
 
-;;we check with:
+;;we check that it's true with the following procedure:
 (define (exercise1.4 q m ta tb)
-  (let ((proposed   (* (/ m 2.0) (/ (dot-product (- (q tb) (q ta))) (- tb ta))))
+  (let ((proposed   (* (/ m 2.0) (/ (square (magnitude (- (q tb) (q ta)))) (- tb ta))))
 	(actual (Lagrangian-action (L-free-particle m) q ta tb)))
-    (eq? proposed actual)))
+    (if (< (abs (- proposed actual)) 0.1)
+	#t
+	#f)))
+;;-------------
+(define ((make-eta nu t1 t2) t)
+  (* (- t t1) (- t t2) (nu t)))
 
+(define ((varied-free-particle-action mass q nu t1 t2) epsilon)
+  (let ((eta (make-eta nu t1 t2)))
+    (Lagrangian-action (L-free-particle mass)
+		       (+ q (* epsilon eta))
+		       t1
+		       t2)))
 
-
-
-
-
-
-
-
-
-
-
-
-
+      
 
 
 
